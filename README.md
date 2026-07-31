@@ -26,16 +26,12 @@ Running the stack on Raspberry Pi hardware adds an extra constraint that forces 
 
 ## Architecture
 
-GitHub (this repo) 
-
-↓ (Flux GitRepository + Kustomizations) Flux CD on the cluster 
-
-├── apps/ → Linkding (bookmark manager) + Cloudflare Tunnel 
-
-├── monitoring/ → kube-prometheus-stack (Prometheus, Grafana, Alertmanager) 
-
-└── clusters/ → Flux system + environment-specific overlays (staging)
-
+- GitHub (this repo)
+    - Flux GitRepository + Kustomizations
+- Flux CD (on the cluster)
+    - apps/ → Linkding + Cloudflare Tunnel
+    - monitoring/ → kube-prometheus-stack (Prometheus, Grafana, Alertmanager)
+    - clusters/ → Flux system + staging overlaysGitHub (this repo) 
 
 **Key design choices**
 - **GitOps only** — no manual `kubectl apply` after bootstrap
@@ -71,30 +67,19 @@ Public hostnames currently include:
 
 ## Repository structure
 
-apps/ 
+- apps/
+    - base/linkding/ — Deployment, Service, PVC, Namespace
+    - staging/linkding/ — Ingress, Cloudflare Tunnel, SOPS secrets
 
-├── base/linkding/ # Deployment, Service, PVC, Namespace 
+- clusters/staging/
+    - flux-system/ — Flux bootstrap & sync
+    - apps.yaml
+    - monitoring.yaml
+    - .sops.yaml
 
-└── staging/linkding/ # Ingress, Cloudflare Tunnel, SOPS secrets
-
-clusters/ 
-
-└── staging/ 
-
-├── flux-system/ # Flux bootstrap & sync 
-
-├── apps.yaml 
-
-├── monitoring.yaml 
-
-└── .sops.yaml
-
-monitoring/ 
-
-├── controllers/ # HelmRepository + HelmRelease for kube-prometheus-stack 
-
-└── configs/ # Grafana TLS secret, kustomizations
-
+- monitoring/
+    - controllers/ — HelmRepository + HelmRelease
+    - configs/ — Grafana TLS + kustomizations
 
 All configuration is declarative. Changes land in Git → Flux reconciles automatically (typically every 1–10 minutes depending on the Kustomization).
 
