@@ -27,9 +27,13 @@ Running the stack on Raspberry Pi hardware adds an extra constraint that forces 
 ## Architecture
 
 GitHub (this repo) 
+
 ↓ (Flux GitRepository + Kustomizations) Flux CD on the cluster 
+
 ├── apps/ → Linkding (bookmark manager) + Cloudflare Tunnel 
+
 ├── monitoring/ → kube-prometheus-stack (Prometheus, Grafana, Alertmanager) 
+
 └── clusters/ → Flux system + environment-specific overlays (staging)
 
 
@@ -68,18 +72,27 @@ Public hostnames currently include:
 ## Repository structure
 
 apps/ 
+
 ├── base/linkding/ # Deployment, Service, PVC, Namespace 
+
 └── staging/linkding/ # Ingress, Cloudflare Tunnel, SOPS secrets
 
 clusters/ 
+
 └── staging/ 
+
 ├── flux-system/ # Flux bootstrap & sync 
+
 ├── apps.yaml 
+
 ├── monitoring.yaml 
+
 └── .sops.yaml
 
 monitoring/ 
+
 ├── controllers/ # HelmRepository + HelmRelease for kube-prometheus-stack 
+
 └── configs/ # Grafana TLS secret, kustomizations
 
 
