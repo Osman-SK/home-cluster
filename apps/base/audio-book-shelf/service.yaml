@@ -1,0 +1,14 @@
+# to expose in the cluster as a service
+# route traffic not as a pod but as a service
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+  name: audio-book-shelf
+  namespace: audio-book-shelf
+spec:
+  ports:
+  - port: 3005
+  selector:
+    app: audio-book-shelf
+  type: ClusterIP

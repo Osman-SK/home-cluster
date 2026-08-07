@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: audio-book-shelf
+resources:
+  - ../../base/audio-book-shelf/
+#  - cloudflare.yaml
+#  - cloudflare-secret.yaml
+#  - linkding-container-env-secret.yaml
+#  - ingress.yaml
