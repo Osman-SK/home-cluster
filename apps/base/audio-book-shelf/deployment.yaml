@@ -34,19 +34,26 @@ spec:
                name: audio-book-shelf-configmap
 #            - secretRef:
 #                name: audio-book-shelf-container-env
-#          volumeMounts:
-#            - name: audio-book-shelf-data
-#              mountPath: /etc/audio-book-shelf-data
-#      volumes:
-#        - name: audio-book-shelf-data
-#          persistentVolumeClaim:
-#            claimName: audio-book-shelf-data-pvc
-#        - name: audio-book-shelf-data
-#          persistentVolumeClaim:
-#            claimName: audio-book-shelf-data-pvc
-#        - name: audio-book-shelf-data
-#          persistentVolumeClaim:
-#            claimName: audio-book-shelf-data-pvc
-#        - name: audio-book-shelf-data
-#          persistentVolumeClaim:
-#            claimName: audio-book-shelf-data-pvc
+
+          volumeMounts:
+            - name: audio-book-shelf-config
+              mountPath: /config
+            - name: audio-book-shelf-metadata
+              mountPath: /metadata
+            - name: audio-book-shelf-podcasts
+              mountPath: /podcasts
+            - name: audio-book-shelf-audiobooks
+              mountPath: /audiobooks
+      volumes:
+        - name: audio-book-shelf-config
+          persistentVolumeClaim:
+            claimName: audio-book-shelf-config
+        - name: audio-book-shelf-metadata
+          persistentVolumeClaim:
+            claimName: audio-book-shelf-metadata
+        - name: audio-book-shelf-podcasts
+          persistentVolumeClaim:
+            claimName: audio-book-shelf-podcasts
+        - name: audio-book-shelf-audiobooks
+          persistentVolumeClaim:
+            claimName: audio-book-shelf-audiobooks
