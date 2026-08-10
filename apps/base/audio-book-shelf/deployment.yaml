@@ -14,14 +14,16 @@ spec:
     spec:
       restartPolicy: Always
 
-#      securityContext:
-#        fsGroup: 1000
-#        runAsUser: 1000
-#        runAsGroup: 1000
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 1000
 
       containers:
         - name: audio-book-shelf
+
           image: ghcr.io/advplyr/audiobookshelf:2.36.0
+
           ports:
             - containerPort: 3005
               protocol: TCP
@@ -32,6 +34,7 @@ spec:
           envFrom:
             - configMapRef:
                name: audio-book-shelf-configmap
+
 #            - secretRef:
 #                name: audio-book-shelf-container-env
 
