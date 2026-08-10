@@ -1,5 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  # to redeploy (eg. user privilage issue) or remove, just comment out below apps:
   - linkding
-#  - audio-book-shelf
+  - audio-book-shelf
