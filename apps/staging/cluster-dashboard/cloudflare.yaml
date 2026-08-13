@@ -66,5 +66,5 @@ data:
     no-autoupdate: true
     ingress:
       - hostname: status.oskcloud.net
-        service: http://cluster-dashboard:3001
+        service: http://cluster-dashboard:3000
       - service: http_status:404
