@@ -60,11 +60,11 @@ metadata:
   name: cloudflared
 data:
   config.yaml: |
-    tunnel: a1d4d65e-016f-400b-a92e-73ac67c6e3ca
+    tunnel: 7fd9a7d6-5bf8-4be3-9cd1-d0362eb39ced
     credentials-file: /etc/cloudflared/creds/credentials.json
     metrics: 0.0.0.0:2000
     no-autoupdate: true
     ingress:
-      - hostname: status.deleontech.net
-        service: http://cluster-dashboard:3000
+      - hostname: status.oskcloud.net
+        service: http://cluster-dashboard:3001
       - service: http_status:404

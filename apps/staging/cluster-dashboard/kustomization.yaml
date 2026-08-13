@@ -3,5 +3,5 @@ kind: Kustomization
 namespace: cluster-dashboard
 resources:
   - ../../base/cluster-dashboard/
-#  - cloudflare.yaml
-#  - secret.yaml
+  - cloudflare.yaml
+  - secret.yaml
