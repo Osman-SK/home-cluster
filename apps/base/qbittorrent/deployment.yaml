@@ -10,8 +10,6 @@ spec:
     spec:
       enableServiceLinks: false
       automountServiceAccountToken: false
-      securityContext:
-        allowPrivilegeEscalation: false
 
       containers:
         - name: qbittorrent
@@ -67,11 +65,6 @@ spec:
             limits:
               cpu: "1"
               memory: 1Gi
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
       volumes:
         - name: config
           persistentVolumeClaim:
