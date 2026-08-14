@@ -13,14 +13,6 @@ spec:
 
       securityContext:
         allowPrivilegeEscalation: false
-        capabilities:
-          drop:
-            - ALL
-          add:
-            - CHOWN
-            - SETUID
-            - SETGID
-            - FOWNER
 
       containers:
         - name: prowlarr
