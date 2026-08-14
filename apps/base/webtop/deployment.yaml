@@ -27,10 +27,10 @@ spec:
           # image: lscr.io/linuxserver/webtop:latest
 
           ports:
-            - name: https
-              containerPort: 3002
-            - name: http
-              containerPort: 3003
+            - name: CUSTOM_HTTPS_PORT
+              value: "3002"
+            - name: CUSTOM_PORT
+              value: "3003"
 
           env:
             - name: PUID
@@ -45,7 +45,7 @@ spec:
                   name: webtop-auth
                   key: password
                   optional: true   # falls back to default "abc" if secret missing
-             - name: CUSTOM_USER
+            - name: CUSTOM_USER
                value: "osk"
 
           securityContext:
