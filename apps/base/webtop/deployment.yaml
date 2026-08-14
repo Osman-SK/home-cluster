@@ -46,7 +46,7 @@ spec:
                   key: password
                   optional: true   # falls back to default "abc" if secret missing
             - name: CUSTOM_USER
-               value: "osk"
+                value: "osk"
 
           securityContext:
             allowPrivilegeEscalation: false
