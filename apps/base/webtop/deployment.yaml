@@ -21,7 +21,7 @@ spec:
 
       containers:
         - name: webtop
-          image: lscr.io/linuxserver/webtop:ubuntu-xfce   # good Ubuntu experience on arm64
+          image: lscr.io/linuxserver/webtop:alpine-xfce
           # Alternatives (lighter on Pi):
           # image: lscr.io/linuxserver/webtop:alpine-xfce
           # image: lscr.io/linuxserver/webtop:latest
