@@ -43,6 +43,8 @@ spec:
               value: "3002"
             - name: CUSTOM_PORT
               value: "3003"
+            - name: PIXELFLUX_WAYLAND
+              value: "false"      # ← important on Pi
             - name: PASSWORD
               valueFrom:
                 secretKeyRef:
