@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webtop
+  labels:
+    app: webtop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webtop
+  template:
+    metadata:
+      labels:
+        app: webtop
+    spec:
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 1000
+
+      containers:
+        - name: webtop
+          image: lscr.io/linuxserver/webtop:ubuntu-xfce   # good Ubuntu experience on arm64
+          # Alternatives (lighter on Pi):
+          # image: lscr.io/linuxserver/webtop:alpine-xfce
+          # image: lscr.io/linuxserver/webtop:latest
+
+          ports:
+            - name: https
+              containerPort: 3002
+            - name: http
+              containerPort: 3003
+
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "Europe/Istanbul"
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: webtop-auth
+                  key: password
+                  optional: true   # falls back to default "abc" if secret missing
+             - name: CUSTOM_USER
+               value: "osk"
+
+          securityContext:
+            allowPrivilegeEscalation: false
+
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: "4"
+              memory: 8Gi
+
+          volumeMounts:
+            - name: config
+              mountPath: /config   # <-- persistent home + Downloads folder
+            - name: shm
+              mountPath: /dev/shm
+
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: webtop-config
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 5Gi    # critical for browsers

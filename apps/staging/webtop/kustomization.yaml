@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: webtop
+resources:
+  - ../../base/webtop/
+  # Uncomment when you want public access:
+  # - ingress.yaml
+  # - webtop-secret.yaml   # (encrypt with SOPS)
+
+  # create manually first, later encrypt with SOPS:
+  # kubectl -n webtop create secret generic webtop-auth --from-literal=password='YourStrongPassword'
