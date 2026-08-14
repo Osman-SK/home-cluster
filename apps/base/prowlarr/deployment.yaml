@@ -16,7 +16,7 @@ spec:
 
       containers:
         - name: prowlarr
-          image: lscr.io/linuxserver/prowlarr:1.36.3
+          image: lscr.io/linuxserver/prowlarr:2.5.2
           imagePullPolicy: IfNotPresent
           env:
             - name: PUID
