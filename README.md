@@ -12,7 +12,7 @@ This repository contains the complete configuration for a personal Kubernetes cl
 
 Everything is defined as code and continuously reconciled by Flux CD. No manual `kubectl apply` after the initial bootstrap.
 
-The design prioritizes the same practices used in real production environments:
+The design prioritizes the same practices used in real production envronments:
 
 - Declarative GitOps workflow
 - Encrypted secrets in Git
