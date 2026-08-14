@@ -21,9 +21,8 @@ spec:
 
       containers:
         - name: webtop
-          image: lscr.io/linuxserver/webtop:alpine-xfce
+          image: lscr.io/linuxserver/webtop:latest
           # Alternatives (lighter on Pi):
-          # image: lscr.io/linuxserver/webtop:alpine-xfce
           # image: lscr.io/linuxserver/webtop:latest
 
           ports:
