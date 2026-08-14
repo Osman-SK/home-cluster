@@ -10,11 +10,18 @@ spec:
     spec:
       enableServiceLinks: false
       automountServiceAccountToken: false
+
       securityContext:
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
-        seccompProfile:
-          type: RuntimeDefault
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+          add:
+            - CHOWN
+            - SETUID
+            - SETGID
+            - FOWNER
+
       containers:
         - name: prowlarr
           image: lscr.io/linuxserver/prowlarr:1.36.3

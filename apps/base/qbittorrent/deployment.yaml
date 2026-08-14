@@ -10,11 +10,17 @@ spec:
     spec:
       enableServiceLinks: false
       automountServiceAccountToken: false
-      securityContext:
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
-        seccompProfile:
-          type: RuntimeDefault
+			securityContext:
+				allowPrivilegeEscalation: false
+				capabilities:
+					drop:
+						- ALL
+					add:
+						- CHOWN
+						- SETUID
+						- SETGID
+						- FOWNER
+
       containers:
         - name: qbittorrent
           image: lscr.io/linuxserver/qbittorrent:5.1.2
