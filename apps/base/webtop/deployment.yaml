@@ -58,10 +58,10 @@ spec:
 
           resources:
             requests:
-              cpu: 500m
-              memory: 1Gi
+              cpu: 250m
+              memory: 500Mi
             limits:
-              cpu: "4"
+              cpu: "3"
               memory: 8Gi
 
           volumeMounts:
