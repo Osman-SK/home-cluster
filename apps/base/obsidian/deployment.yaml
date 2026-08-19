@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: obsidian
+  labels:
+    app: obsidian
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: obsidian
+  template:
+    metadata:
+      labels:
+        app: obsidian
+    spec:
+      # LinuxServer images manage UID via PUID/PGID.
+      # Keep pod-level securityContext commented (same pattern as webtop).
+      # securityContext:
+      #   fsGroup: 1000
+      #   runAsUser: 1000
+      #   runAsGroup: 1000
+
+      containers:
+        - name: obsidian
+          image: lscr.io/linuxserver/obsidian:latest
+          ports:
+            - name: https
+              containerPort: 3001
+# HTTPS is required for full functionality per https://docs.linuxserver.io/images/docker-obsidian/
+
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "Europe/Istanbul"
+            # Important on Raspberry Pi (matches webtop)
+            - name: PIXELFLUX_WAYLAND
+              value: "false"
+            # Optional basic auth (falls back to image default if secret missing)
+            - name: CUSTOM_USER
+              value: "osk"
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: obsidian-auth
+                  key: password
+                  optional: true
+
+          securityContext:
+            allowPrivilegeEscalation: false
+
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 4Gi
+
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: shm
+              mountPath: /dev/shm
+
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: obsidian-config
+        # Required for Electron / browser-based GUI (same as webtop)
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 2Gi

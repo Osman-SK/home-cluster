@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: obsidian
+resources:
+  - ../../base/obsidian/
+  # Uncomment when you want public access:
+  # - ingress.yaml
+  # - obsidian-auth-secret.yaml   # encrypt with SOPS after creation
+
+  # Create the auth secret manually first (then encrypt with SOPS):
+  # kubectl -n obsidian create secret generic obsidian-auth --from-literal=password='YourStrongPassword'

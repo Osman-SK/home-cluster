@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: obsidian
+  labels:
+    app: obsidian
+spec:
+  type: ClusterIP
+  selector:
+    app: obsidian
+  ports:
+    - name: https
+      port: 3001
+      targetPort: 3001
+# HTTPS is required for full functionality per https://docs.linuxserver.io/images/docker-obsidian/
