@@ -12,6 +12,8 @@ spec:
       labels:
         app: cluster-dashboard
     spec:
+      nodeSelector:
+        kubernetes.io/arch: arm64
       containers:
         - name: nginx
           image: ghcr.io/osman-sk/cluster-dashboard:v1.0.1
