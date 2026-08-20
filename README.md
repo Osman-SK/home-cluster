@@ -1,6 +1,6 @@
-# pi-cluster
+# Home-Cluster
 
-Kubernetes HomeLab running on Raspberry Pi, fully managed with GitOps.
+Multi-node and multi-architecture kubernetes HomeLab running on arm64 and X86_64, fully managed with GitOps: [status.oskcloud.net](https://status.oskcloud.net/)
 
 A production-style cluster with declarative infrastructure, secrets management, observability, and zero-trust networking — all on constrained, real hardware.
 
@@ -8,7 +8,7 @@ A production-style cluster with declarative infrastructure, secrets management, 
 
 ## Overview
 
-This repository contains the complete configuration for a personal Kubernetes cluster. 
+This repository contains the complete configuration for a personal Kubernetes cluster.
 
 Everything is defined as code and continuously reconciled by Flux CD. No manual `kubectl apply` after the initial bootstrap.
 
@@ -31,7 +31,7 @@ Running the stack on Raspberry Pi hardware adds an extra constraint that forces 
 - Flux CD (on the cluster)
     - apps/ → Linkding + Cloudflare Tunnel
     - monitoring/ → kube-prometheus-stack (Prometheus, Grafana, Alertmanager)
-    - clusters/ → Flux system + staging overlaysGitHub (this repo) 
+    - clusters/ → Flux system + staging overlaysGitHub (this repo)
 
 **Key design choices**
 - **GitOps only** — no manual `kubectl apply` after bootstrap
