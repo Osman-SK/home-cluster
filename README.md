@@ -1,103 +1,140 @@
 # Home-Cluster
 
-Multi-node and multi-architecture kubernetes HomeLab running on arm64 and X86_64, fully managed with GitOps: [status.oskcloud.net](https://status.oskcloud.net/)
+**Multi-node · Multi-architecture (arm64 + amd64) Kubernetes Homelab**  
+Fully managed with GitOps · [status.oskcloud.net](https://status.oskcloud.net)
 
-A production-style cluster with declarative infrastructure, secrets management, observability, and zero-trust networking — all on constrained, real hardware.
+A production-style personal cluster running on real constrained hardware  
+(Raspberry Pi 5 + HP x86 node). Everything is declarative, encrypted in Git,  
+and continuously reconciled by Flux CD. No manual `kubectl apply` after bootstrap.
 
 ---
 
-## Overview
+## Cluster at a glance
 
-This repository contains the complete configuration for a personal Kubernetes cluster.
+| Hostname   | Arch  | RAM   | Role                          | Notes                          |
+|------------|-------|-------|-------------------------------|--------------------------------|
+| **rpi5**   | arm64 | 16 GB | Control plane + primary workloads | Raspberry Pi 5                 |
+| **hp-8200**| amd64 | 12 GB | Worker / storage              | HP Compaq 8200 (NFS + media)   |
 
-Everything is defined as code and continuously reconciled by Flux CD. No manual `kubectl apply` after the initial bootstrap.
-
-The design prioritizes the same practices used in real production envronments:
-
-- Declarative GitOps workflow
-- Encrypted secrets in Git
-- First-class observability
-- Restricted security contexts
-- External exposure without opening ports on the home network
-
-Running the stack on Raspberry Pi hardware adds an extra constraint that forces careful resource awareness and solid fundamentals.
+Live node metrics, CPU/memory, pod counts and service health are available at  
+**[status.oskcloud.net](https://status.oskcloud.net)**.
 
 ---
 
 ## Architecture
 
-- GitHub (this repo)
-    - Flux GitRepository + Kustomizations
-- Flux CD (on the cluster)
-    - apps/ → Linkding + Cloudflare Tunnel
-    - monitoring/ → kube-prometheus-stack (Prometheus, Grafana, Alertmanager)
-    - clusters/ → Flux system + staging overlaysGitHub (this repo)
+```
+GitHub (this repo)
+       │
+       ▼
+Flux CD (GitRepository + Kustomizations)
+       │
+       ├── apps/          → Linkding, Audiobookshelf, Obsidian, Webtop,
+       │                   Prowlarr, qBittorrent, Cluster Dashboard
+       ├── media/         → dedicated Kustomization for *arr stack
+       ├── monitoring/    → kube-prometheus-stack (Prometheus + Grafana)
+       └── infra/         → NFS CSI driver + Renovate
+```
 
-**Key design choices**
-- **GitOps only** — no manual `kubectl apply` after bootstrap
-- **Kustomize overlays** for base vs. environment (staging)
-- **SOPS + age** for secret encryption (`.sops.yaml` + encrypted YAML)
-- **Traefik** as IngressClass
-- **Cloudflare Tunnel** (`cloudflared`) for zero-trust external access
-- **HelmRelease** (via Flux) for the monitoring stack
-- Persistent storage via PVC for application data
+**Key design decisions**
 
-Public hostnames currently include:
-- `lds.oskcloud.net` / `ldpi.oskcloud.net` → Linkding
-- `grs.oskcloud.net` → Grafana
+- **GitOps only** — Flux is the single source of truth
+- **Kustomize overlays** (`base` + `staging`) for environment separation
+- **SOPS + age** — all secrets encrypted in Git; Flux decrypts at reconcile time
+- **Zero-trust external access** — Cloudflare Tunnels (no inbound ports on the home network)
+- **Traefik** as the IngressClass
+- **Heterogeneous scheduling** — `nodeSelector` / arch affinity where needed  
+  (media workloads pinned to the amd64 storage node, dashboard prefers arm64, etc.)
+- **NFS CSI** for shared persistent storage (HDD-backed StorageClasses)
+- **Renovate** running in-cluster for automated dependency/image updates
+- **Pod hardening** — non-root, `allowPrivilegeEscalation: false`, resource requests/limits on most workloads
+
+---
+
+## Public endpoints
+
+| Hostname                                      | Application              |
+|-----------------------------------------------|--------------------------|
+| [status.oskcloud.net](https://status.oskcloud.net) | Cluster Dashboard (live metrics) |
+| [lds.oskcloud.net](https://lds.oskcloud.net)       | Linkding                 |
+| [grs.oskcloud.net](https://grs.oskcloud.net)       | Grafana                  |
+| [audiobooks.oskcloud.net](https://audiobooks.oskcloud.net) | Audiobookshelf     |
+
+All external traffic is terminated by Cloudflare Tunnels + Access.
 
 ---
 
 ## Tech stack
 
-| Category            | Tools / Components                          |
-| ------------------- | ------------------------------------------- |
-| Orchestration       | Kubernetes (k3s on Raspberry Pi)            |
-| GitOps              | Flux CD v2 (Kustomization + HelmRelease)    |
-| Manifest management | Kustomize                                   |
-| Secrets             | SOPS + age                                  |
-| Ingress             | Traefik                                     |
-| External access     | Cloudflare Tunnel (cloudflared)             |
-| Observability       | kube-prometheus-stack (Prometheus, Grafana) |
-| Application         | Linkding                                    |
-| Storage             | PersistentVolumeClaims                      |
-| Source control      | GitHub                                      |
+| Category              | Component                                      |
+|-----------------------|------------------------------------------------|
+| Orchestration         | k3s (multi-arch)                               |
+| GitOps                | Flux CD v2 (Kustomization + HelmRelease)       |
+| Manifests             | Kustomize                                      |
+| Secrets               | SOPS + age                                     |
+| Ingress               | Traefik                                        |
+| External access       | Cloudflare Tunnel (`cloudflared`)              |
+| Observability         | kube-prometheus-stack (Prometheus, Grafana)    |
+| Storage               | NFS CSI + PVCs                                 |
+| Dependency updates    | Renovate (in-cluster CronJob)                  |
+| Applications          | 7+                                             |
 
 ---
 
 ## Repository structure
 
-- apps/
-    - base/linkding/ — Deployment, Service, PVC, Namespace
-    - staging/linkding/ — Ingress, Cloudflare Tunnel, SOPS secrets
+```
+apps/
+├── base/                     # Shared deployments, services, PVCs, namespaces
+│   ├── audio-book-shelf/
+│   ├── cluster-dashboard/
+│   ├── linkding/
+│   ├── media/                # namespace only
+│   ├── obsidian/
+│   ├── prowlarr/
+│   ├── qbittorrent/
+│   └── webtop/
+└── staging/                  # Environment overlays (Ingress, Cloudflare Tunnels, SOPS secrets)
+    ├── audio-book-shelf/
+    ├── cluster-dashboard/
+    ├── linkding/
+    ├── media/
+    ├── obsidian/
+    └── webtop/
 
-- clusters/staging/
-    - flux-system/ — Flux bootstrap & sync
-    - apps.yaml
-    - monitoring.yaml
-    - .sops.yaml
+clusters/staging/
+├── flux-system/              # Flux bootstrap
+├── apps.yaml                 # Flux Kustomization → ./apps/staging
+├── media.yaml                # Flux Kustomization → media stack
+├── monitoring.yaml
+├── infra.yaml
+└── .sops.yaml
 
-- monitoring/
-    - controllers/ — HelmRepository + HelmRelease
-    - configs/ — Grafana TLS + kustomizations
+infra/controllers/
+├── base/ + staging/          # NFS CSI HelmRelease + Renovate
 
-All configuration is declarative. Changes land in Git → Flux reconciles automatically (typically every 1–10 minutes depending on the Kustomization).
+monitoring/
+├── controllers/              # kube-prometheus-stack HelmRepository + HelmRelease
+└── configs/                  # Grafana TLS secret, etc.
+
+dashboard/                    # Source of the status page (built into cluster-dashboard image)
+```
+
+All changes flow: **Git push → Flux reconcile (1–10 min) → SOPS decrypt → apply**.
 
 ---
 
-## More on tech:
+## What this repository demonstrates
 
-This repository will show:
-
-- **GitOps & declarative infrastructure** (Flux CD, Kustomize, HelmRelease)
-- **Secrets management** in Git (SOPS + age encryption)
-- **Kubernetes operators & controllers** (Flux, Prometheus Operator)
-- **Ingress & zero-trust networking** (Traefik + Cloudflare Tunnel)
-- **Observability** (metrics, dashboards, TLS for Grafana)
-- **Security hygiene** (non-root containers, restricted securityContext, encrypted secrets)
-- **Environment separation** (base + staging overlays)
-- **Resource-constrained environments** (Raspberry Pi hardware)
-- **End-to-end ownership** — from cluster bootstrap to application + monitoring
+- Multi-architecture / multi-node Kubernetes on real hardware
+- Full GitOps workflow (Flux + Kustomize + HelmRelease)
+- Secrets-as-code with SOPS + age
+- Zero-trust networking (Cloudflare Tunnels, no open ports)
+- Shared storage with CSI
+- Observability (Prometheus Operator + Grafana)
+- Automated dependency management (Renovate)
+- Security hygiene (non-root, restricted securityContexts, resource limits)
+- End-to-end ownership: bootstrap → applications → monitoring → external access
 
 These are the same patterns used in production Platform / SRE / DevOps roles.
 
@@ -108,7 +145,8 @@ These are the same patterns used in production Platform / SRE / DevOps roles.
 **Osman Sarper Küçük**  
 DevOps / Platform Engineer focused on reliable, scalable infrastructure.
 
-Previously Web3 Data Specialist (onchain analytics, data pipelines, BigQuery, TypeScript). Now applying that systems thinking to Kubernetes, automation, CI/CD, and observability.
+Previously Web3 Data Specialist (onchain analytics, data pipelines).  
+Now applying systems thinking to Kubernetes, automation, CI/CD and observability.
 
 - Personal site: [osk.cool](https://osk.cool)
 - LinkedIn: [osmansarperkucuk](https://www.linkedin.com/in/osmansarperkucuk)
@@ -119,11 +157,11 @@ Previously Web3 Data Specialist (onchain analytics, data pipelines, BigQuery, Ty
 
 ## Notes for reviewers
 
-- This is an active personal lab, not a polished open-source product.
-- The cluster runs continuously and is used daily.
-- Secrets are encrypted; the public repo contains only ciphertext.
-- Commits follow a clear `feat:` / `fix:` style and show iterative development of the stack.
+- This is an **active personal lab**, not a polished open-source product.
+- The cluster runs 24/7 and is used daily.
+- Secrets are encrypted; the public repository contains only ciphertext.
+- Commits follow conventional `feat:` / `fix:` style and show iterative real-world development (including recent NFS CSI + media stack work).
 
-If you are evaluating candidates for Platform, DevOps, SRE, or Infrastructure roles and value hands-on GitOps + Kubernetes experience, this repository is a direct demonstration of those skills.
+If you are evaluating candidates for Platform, DevOps, SRE or Infrastructure roles and value hands-on multi-arch GitOps + Kubernetes experience, this repository is a direct demonstration of those skills.
 
-Feel free to reach out — happy to walk through any part of the design.
+Happy to walk through any part of the design.
