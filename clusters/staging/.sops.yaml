@@ -1,4 +1,8 @@
 creation_rules:
+# New rule for the NFS StorageClass
+  - path_regex: infra/controllers/.*/nfs-csi/storageclass\.yaml$
+    age: age1m47tw0h4rvjlrqrr8mca4qkftfqf0pwen203a622z69kfjk6wvgqc9emky
+
   - path_regex: .*.yaml
     encrypted_regex: ^(data|stringData)$
     age: age1m47tw0h4rvjlrqrr8mca4qkftfqf0pwen203a622z69kfjk6wvgqc9emky
