@@ -4,7 +4,8 @@ metadata:
   name: prowlarr-config
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
+  storageClassName: nfs-hdd
   resources:
     requests:
       storage: 1Gi
