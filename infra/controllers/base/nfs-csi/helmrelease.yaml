@@ -12,6 +12,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: csi-driver-nfs
+        namespace: flux-system
   values:
     controller:
       replicas: 1
@@ -19,4 +20,4 @@ spec:
     driver:
       mountPermissions: "0755"
     storageClass:
-      create: false               #  manage myself 
+      create: false               #  manage myself
