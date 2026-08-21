@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>pi-cluster | Status Dashboard</title>
+<title>home-cluster | Status Dashboard</title>
 <meta name="description" content="Live Kubernetes homelab status dashboard - k3s on mixed architecture, managed through FluxCD GitOps." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -115,7 +115,7 @@ footer{border-top:1px solid var(--border);padding-top:32px;text-align:center}
         <span class="glow-dot green" id="statusDot" style="width:10px;height:10px"></span>
         <span id="statusText" style="font-size:12px;font-weight:600;color:var(--green);font-family:var(--mono);letter-spacing:.05em">ALL SYSTEMS OPERATIONAL</span>
       </div>
-      <h1>pi-cluster</h1>
+      <h1>home-cluster</h1>
       <p>Self-hosted Kubernetes homelab running k3s on mixed architecture arm64 + amd64, managed entirely through FluxCD GitOps.</p>
       <div class="api-status live" id="apiStatus">
         <span class="glow-dot green" style="width:6px;height:6px"></span>
@@ -167,7 +167,7 @@ footer{border-top:1px solid var(--border);padding-top:32px;text-align:center}
       <a href="https://github.com/Osman-SK" target="_blank" rel="noopener">GitHub</a>
       <a href="https://www.linkedin.com/in/osmansarperkucuk" target="_blank" rel="noopener">LinkedIn</a>
       <a href="https://osk.cool" target="_blank" rel="noopener">Blog</a>
-      <a href="https://github.com/Osman-SK/pi-cluster" target="_blank" rel="noopener">Source</a>
+      <a href="https://github.com/Osman-SK/home-cluster" target="_blank" rel="noopener">Source</a>
     </div>
     <div class="footer-tagline">Built with &#10084;&#65039; by OSK</div>
     <div class="footer-motto">If it is not in Git, it does not exist.</div>
@@ -190,7 +190,7 @@ const STACK = [
   { n: "Prometheus", c: "Metrics" }, { n: "Grafana", c: "Viz" }, { n: "Renovate", c: "Deps" },
 ];
 const FLOW = [
-  { label: "Git Push", sub: "pi-cluster", color: "var(--text)" },
+  { label: "Git Push", sub: "home-cluster", color: "var(--text)" },
   { label: "FluxCD", sub: "Reconcile", color: "var(--green)" },
   { label: "SOPS", sub: "Decrypt", color: "var(--yellow)" },
   { label: "k3s", sub: "Apply", color: "var(--purple)" },
@@ -199,18 +199,29 @@ const FLOW = [
  
 // Known service metadata (enriches Prometheus data)
 const SVC_META = {
-  "vikunja": { desc: "Task management", tags: ["React", "PostgreSQL"] },
   "linkding": { desc: "Bookmark manager", tags: ["Python", "SQLite"] },
-  "couchdb": { desc: "Knowledge sync (Obsidian LiveSync)", tags: ["CouchDB", "Sync"], displayName: "Obsidian LiveSync" },
   "kube-prometheus-stack-grafana": { desc: "Metrics and dashboards", tags: ["Prometheus", "Helm"], displayName: "Grafana" },
   "cloudflared": { desc: "Cloudflare Tunnel agent", tags: ["Tunnel"] },
-  "longhorn-ui": { desc: "Distributed storage dashboard", tags: ["Storage", "CNCF"], displayName: "Longhorn" },
+  "prowlarr": { desc: "Indexer manager", tags: ["*arr", "Media"] },
+  "qbittorrent": { desc: "Torrent client", tags: ["*arr", "Media"] },
+  "audiobookshelf": { desc: "Audiobook server", tags: ["Media"] },
+  "obsidian": { desc: "Notes (GUI)", tags: ["LinuxServer"] },
+  "webtop": { desc: "Web desktop", tags: ["LinuxServer"] },
 };
  
-// Node role mapping
-const NODE_ROLES = { "kubepi": "Server (Control Plane)", "kubethink": "Agent (Storage)", "kubepi-w1": "Agent", "kubepi-w2": "Agent" };
-const NODE_RAM = { "kubepi": "8GB", "kubethink": "8GB", "kubepi-w1": "4GB", "kubepi-w2": "2GB" };
-const NODE_ARCH = { "kubepi": "arm64 · Debian", "kubepi-w1": "arm64 · Debian", "kubepi-w2": "arm64 · Debian", "kubethink": "amd64 · RHEL" };
+// Node role mapping (kept in sync with live cluster)
+const NODE_ROLES = {
+  "rpi5": "Server (Control Plane)",
+  "hp-8200": "Agent (Storage)"
+};
+const NODE_RAM = {
+  "rpi5": "16GB",
+  "hp-8200": "12GB"
+};
+const NODE_ARCH = {
+  "rpi5": "arm64 · Raspberry Pi 5",
+  "hp-8200": "amd64 · HP 8200"
+};
  
 // ── Render static sections ──
 function renderFlow() {
@@ -275,7 +286,7 @@ function renderNodes(nodes) {
           <div class="bar"><div class="bar-fill" style="width:${n.memory}%;background:linear-gradient(90deg,${memC}cc,${memC});box-shadow:0 0 8px ${memC}44"></div></div>
         </div>
       </div>
-      <div class="node-foot"><span>${NODE_ARCH[n.name] || ''}</span><span>${n.pods}/110 pods</span></div>`;
+      <div class="node-foot"><span>${NODE_ARCH[n.name] || (n.arch || '')}</span><span>${n.pods} pods</span></div>`;
     el.appendChild(d);
   });
 }
@@ -295,7 +306,6 @@ function renderServices(services) {
     'metrics-server',
     'coredns',
     'cluster-dashboard',
-    'longhorn-driver-deployer',
     'csi-attacher',
     'csi-provisioner',
     'csi-resizer',

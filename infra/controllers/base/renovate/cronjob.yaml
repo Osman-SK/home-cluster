@@ -14,7 +14,7 @@ spec:
             - name: renovate
               image: renovate/renovate:latest
               args:
-                - Osman-SK/pi-cluster
+                - Osman-SK/home-cluster
 
               envFrom:
                 - secretRef:
