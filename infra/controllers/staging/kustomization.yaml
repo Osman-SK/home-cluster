@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - renovate
   - nfs-csi
+  - tailscale-operator
