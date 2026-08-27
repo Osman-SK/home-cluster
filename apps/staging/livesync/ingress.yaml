@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: livesync
+  namespace: livesync
+spec:
+  ingressClassName: tailscale
+  tls:
+    - hosts:
+        # MagicDNS short name → https://livesync.taild5e129.ts.net
+        - livesync
+  defaultBackend:
+    service:
+      name: couchdb
+      port:
+        number: 5984
