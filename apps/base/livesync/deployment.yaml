@@ -39,7 +39,7 @@ spec:
 
       containers:
         - name: couchdb
-          image: couchdb:3.5.0
+          image: couchdb:3.5.2
           ports:
             - name: http
               containerPort: 5984
