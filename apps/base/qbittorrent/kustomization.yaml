@@ -9,7 +9,7 @@ labels:
 resources:
   - deployment.yaml
   - service.yaml
-  - pvc.yaml
+  - storage.yaml
   - networkpolicy.yaml
 images:
   - name: lscr.io/linuxserver/qbittorrent
