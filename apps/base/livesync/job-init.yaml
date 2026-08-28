@@ -56,4 +56,18 @@ spec:
               put "${url}/_node/_local/_config/cors/headers" '"accept, authorization, content-type, origin, referer"'
               put "${url}/_node/_local/_config/cors/methods" '"GET,PUT,POST,HEAD,DELETE"'
               put "${url}/_node/_local/_config/cors/max_age" '"3600"'
+              # Single-node cluster + system DBs (n=1 replica, q=1 shard).
+              curl -sf -X POST "${url}/_cluster_setup" \
+                -H 'Content-Type: application/json' \
+                -d "{\"action\":\"enable_single_node\",\"username\":\"${COUCHDB_USER}\",\"password\":\"${COUCHDB_PASSWORD}\",\"bind_address\":\"0.0.0.0\",\"port\":5984}" \
+                || true
+              echo
+              curl -s -X PUT "${url}/_users?n=1&q=1" || true
+              echo
+              curl -s -X PUT "${url}/_replicator?n=1&q=1" || true
+              echo
+              curl -s -X PUT "${url}/_global_changes?n=1&q=1" || true
+              echo
+              curl -s "${url}/_all_dbs"
+              echo
               echo "couchdb-init done"
