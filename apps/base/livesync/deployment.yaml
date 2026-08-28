@@ -66,18 +66,18 @@ spec:
             allowPrivilegeEscalation: true
 
           # --- enable after: curl http://127.0.0.1:5984/_up  →  {"status":"ok"}
-          # readinessProbe:
-          #   httpGet:
-          #     path: /_up
-          #     port: http
-          #   initialDelaySeconds: 20
-          #   periodSeconds: 10
-          # livenessProbe:
-          #   httpGet:
-          #     path: /_up
-          #     port: http
-          #   initialDelaySeconds: 40
-          #   periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /_up
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /_up
+              port: http
+            initialDelaySeconds: 40
+            periodSeconds: 20
 
       volumes:
         # Local disk on hp-8200. NFS is a known CouchDB/Erlang crash path.

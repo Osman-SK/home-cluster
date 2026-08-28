@@ -6,5 +6,4 @@ resources:
   - service.yaml
   # NFS PVC retired — hostPath is in deployment.yaml ; might try to configure nfs later
   # - storage.yaml
-  # --- uncomment AFTER the couchdb pod is Running and /_up returns ok
-  # - job-init.yaml
+  - job-init.yaml
