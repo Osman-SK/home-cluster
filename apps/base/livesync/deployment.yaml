@@ -81,11 +81,11 @@ spec:
               cpu: "1"
               memory: 1Gi
           securityContext:
-            allowPrivilegeEscalation: false
+            runAsUser: 0
+            allowPrivilegeEscalation: true
       volumes:
         - name: data
-          persistentVolumeClaim:
-            claimName: couchdb-data
+          emptyDir: {}
         - name: local-ini
           configMap:
             name: couchdb-local-ini
