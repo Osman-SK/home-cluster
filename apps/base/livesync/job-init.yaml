@@ -1,0 +1,59 @@
+# Applies LiveSync CouchDB settings via the HTTP API, same idea as
+# vrtmrz/obsidian-livesync docker/couchdb-init.
+# Uncomment this file in kustomization.yaml only after:
+#   kubectl -n livesync exec deploy/couchdb -- curl -s http://127.0.0.1:5984/_up
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: couchdb-init
+  namespace: livesync
+spec:
+  backoffLimit: 20
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: init
+          image: curlimages/curl:8.11.1
+          env:
+            - name: COUCHDB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: couchdb-auth
+                  key: COUCHDB_USER
+            - name: COUCHDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: couchdb-auth
+                  key: COUCHDB_PASSWORD
+          command:
+            - sh
+            - -c
+            - |
+              set -eu
+              url="http://${COUCHDB_USER}:${COUCHDB_PASSWORD}@couchdb.livesync.svc:5984"
+              echo "waiting for couchdb..."
+              i=0
+              until curl -sf "${url}/_up"; do
+                i=$((i+1))
+                if [ "$i" -gt 60 ]; then
+                  echo "timeout waiting for /_up"
+                  exit 1
+                fi
+                sleep 3
+              done
+              put() { curl -sf -X PUT "$1" -d "$2"; echo; }
+              put "${url}/_node/_local/_config/couchdb/single_node" '"true"'
+              put "${url}/_node/_local/_config/couchdb/max_document_size" '"50000000"'
+              put "${url}/_node/_local/_config/chttpd/require_valid_user" '"true"'
+              put "${url}/_node/_local/_config/chttpd/max_http_request_size" '"4294967296"'
+              put "${url}/_node/_local/_config/chttpd/enable_cors" '"true"'
+              put "${url}/_node/_local/_config/chttpd_auth/require_valid_user" '"true"'
+              put "${url}/_node/_local/_config/httpd/enable_cors" '"true"'
+              put "${url}/_node/_local/_config/httpd/WWW-Authenticate" '"Basic realm=\"couchdb\""'
+              put "${url}/_node/_local/_config/cors/credentials" '"true"'
+              put "${url}/_node/_local/_config/cors/origins" '"app://obsidian.md,capacitor://localhost,http://localhost"'
+              put "${url}/_node/_local/_config/cors/headers" '"accept, authorization, content-type, origin, referer"'
+              put "${url}/_node/_local/_config/cors/methods" '"GET,PUT,POST,HEAD,DELETE"'
+              put "${url}/_node/_local/_config/cors/max_age" '"3600"'
+              echo "couchdb-init done"

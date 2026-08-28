@@ -16,30 +16,22 @@ spec:
     metadata:
       labels:
         app: couchdb
-
     spec:
+      # Data lives on this node's disk. Do not schedule elsewhere.
       nodeSelector:
         kubernetes.io/hostname: hp-8200
+
+      # Official image starts as root, writes local.d/docker.ini from
+      # COUCHDB_USER/PASSWORD, then setpriv-drops to uid 5984.
+      # Do NOT set runAsNonRoot / runAsUser: 5984 on the pod.
       securityContext:
         fsGroup: 5984
         fsGroupChangePolicy: OnRootMismatch
-      initContainers:
-        - name: fix-data-perms
-          image: busybox:1.38
-          command:
-            - sh
-            - -c
-            - chown -R 5984:5984 /data && chmod 775 /data
-          securityContext:
-            runAsUser: 0
-            allowPrivilegeEscalation: false
-          volumeMounts:
-            - name: data
-              mountPath: /data       
 
       containers:
         - name: couchdb
-          image: couchdb:3.5.2
+          # 3.4.2 = image used by vrtmrz self-hosted-livesync-server-tailscale
+          image: couchdb:3.4.2
           ports:
             - name: http
               containerPort: 5984
@@ -57,22 +49,11 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /opt/couchdb/data
-            - name: local-ini
-              mountPath: /opt/couchdb/etc/local.d/livesync.ini
-              subPath: livesync.ini
-              readOnly: true
-          readinessProbe:
-            httpGet:
-              path: /_up
-              port: http
-            initialDelaySeconds: 10
-            periodSeconds: 10
-          livenessProbe:
-            httpGet:
-              path: /_up
-              port: http
-            initialDelaySeconds: 30
-            periodSeconds: 20
+            # Writable dir so the entrypoint can create docker.ini.
+            # Never mount a ConfigMap here — ConfigMaps are immutable
+            # and chmod on startup exits 1 with no logs (EPERM).
+            - name: local-d
+              mountPath: /opt/couchdb/etc/local.d
           resources:
             requests:
               cpu: 100m
@@ -83,9 +64,29 @@ spec:
           securityContext:
             runAsUser: 0
             allowPrivilegeEscalation: true
+
+          # --- enable after: curl http://127.0.0.1:5984/_up  →  {"status":"ok"}
+          # readinessProbe:
+          #   httpGet:
+          #     path: /_up
+          #     port: http
+          #   initialDelaySeconds: 20
+          #   periodSeconds: 10
+          # livenessProbe:
+          #   httpGet:
+          #     path: /_up
+          #     port: http
+          #   initialDelaySeconds: 40
+          #   periodSeconds: 20
+
       volumes:
+        # Local disk on hp-8200. NFS is a known CouchDB/Erlang crash path.
+        # One-time on the node:
+        #   sudo mkdir -p /var/lib/livesync/couchdb
+        #   sudo chown 5984:5984 /var/lib/livesync/couchdb
         - name: data
+          hostPath:
+            path: /var/lib/livesync/couchdb
+            type: DirectoryOrCreate
+        - name: local-d
           emptyDir: {}
-        - name: local-ini
-          configMap:
-            name: couchdb-local-ini
