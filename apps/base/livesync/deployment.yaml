@@ -31,7 +31,7 @@ spec:
       containers:
         - name: couchdb
           # 3.4.2 = image used by vrtmrz self-hosted-livesync-server-tailscale
-          image: couchdb:3.4.2
+          image: couchdb:3.5.2
           ports:
             - name: http
               containerPort: 5984
