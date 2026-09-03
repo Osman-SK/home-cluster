@@ -14,7 +14,7 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: init
-          image: curlimages/curl:8.11.1
+          image: curlimages/curl:8.22.0
           env:
             - name: COUCHDB_USER
               valueFrom:
