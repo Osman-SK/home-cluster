@@ -35,9 +35,6 @@ spec:
             - configMapRef:
                name: audio-book-shelf-configmap
 
-#            - secretRef:
-#                name: audio-book-shelf-container-env
-
           volumeMounts:
             - name: audio-book-shelf-config
               mountPath: /config
@@ -47,6 +44,7 @@ spec:
               mountPath: /podcasts
             - name: audio-book-shelf-audiobooks
               mountPath: /audiobooks
+
       volumes:
         - name: audio-book-shelf-config
           persistentVolumeClaim:
