@@ -6,5 +6,5 @@ resources:
   - audio-book-shelf
   - cluster-dashboard
   - webtop
-  - obsidian
+#  - obsidian
   - livesync
