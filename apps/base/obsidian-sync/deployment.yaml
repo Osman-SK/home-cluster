@@ -57,15 +57,8 @@ spec:
           volumeMounts:
             - name: couchdb-data
               mountPath: /opt/couchdb/data
-            - name: couchdb-config
-              mountPath: /opt/couchdb/etc/local.d/custom.ini
-              subPath: local.ini
-              readOnly: true
 
       volumes:
         - name: couchdb-data
           persistentVolumeClaim:
             claimName: couchdb-pvc-data
-        - name: couchdb-config
-          configMap:
-            name: couchdb-config
