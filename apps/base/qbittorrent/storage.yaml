@@ -20,4 +20,4 @@ spec:
   storageClassName: nfs-hdd
   resources:
     requests:
-      storage: 250Gi
+      storage: 500Gi
