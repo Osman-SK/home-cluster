@@ -13,4 +13,4 @@ resources:
   - networkpolicy.yaml
 images:
   - name: lscr.io/linuxserver/prowlarr
-    newTag: "2.5.2"
+    newTag: "2.6.5"
