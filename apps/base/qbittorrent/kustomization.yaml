@@ -13,4 +13,4 @@ resources:
   - networkpolicy.yaml
 images:
   - name: lscr.io/linuxserver/qbittorrent
-    newTag: "5.2.4"
+    newTag: "5.3.0"
