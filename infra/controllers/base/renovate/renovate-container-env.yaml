@@ -1,6 +1,6 @@
 apiVersion: v1
 data:
-    RENOVATE_TOKEN: ENC[AES256_GCM,data:cc/vCDYpG/P9ZshtOHA9NfE58uljWiVD5K70YLa3OrfRzW6p64ZfSw==,iv:rE80wxxpEuIJaskDZrFjdaQ4Dz80mhuZOUbS6SUbWaw=,tag:N17WSRU66rwQFwV04Hpj3g==,type:str]
+    RENOVATE_TOKEN: ENC[AES256_GCM,data:dfXW0WbgW0Tus0a6uSPSCxRPb955IRU5j1Mb5goX0zurM5g2F3MM4sQvSjCJ2d5fOnywOt1Ro7I=,iv:ZzwvTvA4y2SWK/uSr1VIoIxMK4svTWLwxzIX7u7aErY=,tag:tZkf1q6besbyWnj2Gg0LzA==,type:str]
 kind: Secret
 metadata:
     name: renovate-container-env
@@ -8,14 +8,14 @@ sops:
     age:
         - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBxOHBSTXBjZkZHVWl4eU5h
-            RE5SNjVOaTZlaDRFVWFRQ3cwSGpFUUYzQXlzCmdQQ09oK09uUzZseWI0dGwvNlVn
-            Wm1VWExnNFMySTJZTHNWYlJiWnFQclkKLS0tIHRXOWJaekZRd1AwZWhLbnJUYVpQ
-            RjRlZER0SVV0eDNRRG5HRkU0SU5EWGcKurSIiGZMxIiCD7uRWn7hZvxlziz7gH+6
-            0r3w3Pi0BRKbN8y8mmO6ZJNjKTMkN61ukRXQUEfkuLcn4VooDjqbvw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBjaEhsOC9BUTdzVDZuZ0wv
+            ZFRhM2dwTjJTT0ZsWlpoMVI3SEhKTFlXRkhBCm9ZcGlkMjhpZEtHUnlXcVZKWG9n
+            YTFNdjRuMVQ1TWIvTGhDT1pENkJ5a0kKLS0tIDQ0L1R1ODRhSVg4LzdhbWhHU2ZT
+            Vlp2NHVNNk5qdHpTSUMwTStCL1lKNXMKNtaDnlYDclmrqEJyUgOlS3nGG+y+WSv7
+            /BwH6MSWwqjaoVzANS2XRuyrBTJVVDYxfzAPGnP2BPsFNc52cAe4qw==
             -----END AGE ENCRYPTED FILE-----
           recipient: age1m47tw0h4rvjlrqrr8mca4qkftfqf0pwen203a622z69kfjk6wvgqc9emky
     encrypted_regex: ^(data|stringData)$
-    lastmodified: "2026-11-13T19:22:06Z"
-    mac: ENC[AES256_GCM,data:eS/NzinPDbYpyOTLFGLzQ+0qeLdcwdA/rvFiWuznX/n4tBApZV71lZ6nnOQs5tf9RGtlgUIEDyb/NfVf5b6IwIY6pUNMdygiRwJj524uBf+UJSK5ozN1I1diEz9MeV3lyTCFGhVosOwYVvqfkZ79nlKu+mhGRpg3Z4rBHTz87Uw=,iv:Z0gE9lZ0GLXkN4Xn67AjVb8y2hLWjusiMAhrKSBlDPw=,tag:A0+cAD/GUhcjirHM1qaq9w==,type:str]
+    lastmodified: "2026-11-13T19:57:53Z"
+    mac: ENC[AES256_GCM,data:Q37zbmZS6q+YycvVRYMjG/5cfIWvW74UqSLuCg6reJ2t7EPVCi0y0Bg9ReH1NmqNb3Ysq4t6vd3uk7xYs/ppF6PYjOO4L22u60OabF1R3ZHFfOCpdL+anEF4YUuQv5dUAHqVp3S/BFpVKlbHeFFU8CaYRE6bzcsS9EWAqTsDZ94=,iv:dC6PSQ4ojgELMUZpGIxaSDOWTHxJg1NnixAla/E71rc=,tag:65Yqgmyfr6ZXgqVMLYMGOg==,type:str]
     version: 3.13.2
