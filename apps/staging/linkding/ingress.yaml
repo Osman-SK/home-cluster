@@ -6,7 +6,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: lds.oskcloud.net
+    - host: link.oskcloud.net
       http:
         paths:
           - backend:
