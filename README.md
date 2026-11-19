@@ -56,7 +56,7 @@ Flux CD (GitRepository + Kustomizations)
 | Hostname                                      | Application              |
 |-----------------------------------------------|--------------------------|
 | [status.oskcloud.net](https://status.oskcloud.net) | Cluster Dashboard (live metrics) |
-| [link.oskcloud.net](https://lds.oskcloud.net)       | Linkding                 |
+| [link.oskcloud.net](https://link.oskcloud.net)       | Linkding                 |
 | [grs.oskcloud.net](https://grs.oskcloud.net)       | Grafana                  |
 | [audiobooks.oskcloud.net](https://audiobooks.oskcloud.net) | Audiobookshelf     |
 
